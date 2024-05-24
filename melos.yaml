@@ -1,0 +1,63 @@
+name: peatill
+
+packages:
+  - app
+
+command:
+  clean:
+    hooks:
+      post: |
+        melos exec --flutter --concurrency=3 -- "flutter clean"
+        melos run build:clean
+
+scripts:
+  build:clean:
+    run: melos run build:clean:select --no-select
+    description: "Run build runner clean in all packages that depend on it."
+
+  gen:
+    run: |
+      melos exec -c 1 -- \
+        dart run build_runner build -d
+        melos run format
+    packageFilters:
+      dirExists: lib
+      dependsOn: "build_runner"
+
+  genw:
+    run: |
+      melos exec -c 1 -- \
+        dart run build_runner watch -d
+        melos run format
+    packageFilters:
+      dirExists: lib
+      dependsOn: "build_runner"
+
+  lint:
+    run: |
+      melos exec -c 1 --ignore="*example*" -- \
+        flutter analyze . --fatal-infos
+    packageFilters:
+      dirExists: lib
+
+  format:
+    run: |
+      melos exec -- \
+        dart format --fix lib/
+    packageFilters:
+      dirExists: lib
+
+  format:ci:
+    run: |
+      melos exec -- \
+        dart format --set-exit-if-changed lib/
+    packageFilters:
+      dirExists: lib
+
+  test:
+    run: |
+      melos exec --fail-fast -- \
+        flutter test --coverage
+    packageFilters:
+      dirExists: test
+
