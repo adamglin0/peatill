@@ -2,10 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:peatill/provider/global_logger_provider.dart';
+import 'package:peatill/providers/global_logger_provider.dart';
 
+import 'app.dart';
 import 'app_startup.dart';
-import 'model/exception/app_exception.dart';
+import 'models/exceptions/app_exception.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +14,7 @@ void main() {
   runApp(
     ProviderScope(
       observers: [_AsyncErrorLogger()],
-      child: AppStartupWidget((_) => const Center()),
+      child: AppStartupWidget((_) => const PeatillApp()),
     ),
   );
 }
